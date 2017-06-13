@@ -5,7 +5,7 @@
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
     "correctAnswer": 3
-  }, {
+  }/*, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
@@ -31,14 +31,14 @@
     "choices": [1, 99, 108, 134, 156],
     "subject": "doubles multiplication",
     "correctAnswer": 4
-  }]];
+  }*/]];
 
   var extraQuestions = [[{
     "question": "What is 2+5?",
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
     "correctAnswer": 3
-  }, {
+  }/*, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
@@ -64,7 +64,7 @@
     "choices": [1, 99, 80, 134, 156],
     "subject": "doubles multiplication",
     "correctAnswer": 2
-  }]];
+  }*/]];
   
   var questionCounter = 0;//question number
   var hasAdded = 0;
@@ -78,8 +78,22 @@
     catScores[i] = 0;
     catNum[i] = 0;
   }
+  }
 
   // Display initial question
+  
+  function numQuestions(){
+    var teacherInput = document.getElementById("QuesNumber").value;
+  }
+  
+  function fillQuestions(){
+    var quesVar = {"question": document.getElementById("QuesText").value,   
+                   "choices": [2, 5, 10, 15, 50],    
+                   "subject": document.getElementById("QuesSubject").value,    
+                   "correctAnswer": document.getElementById("QuesAns").value
+                  };
+    questions[0].push(quesVar);
+  }
  
   displayQues();
   
