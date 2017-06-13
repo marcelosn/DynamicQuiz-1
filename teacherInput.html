@@ -10,14 +10,17 @@
 <h1> Teacher Only Section</h1>    
 <h2> Please input number of questions for the quiz</h2>   
 <form action="/prototype.js">
-Number of Questions for Standard Quiz: <input type="text" name="QuesNumber" value="">
+Number of Questions for Standard Quiz: <input type="text" id="QuesNumber" value="">
 <br>
 <input type="submit" value="Submit">
 </form>
 </div>
 <div id = 'questionsInput'>
 <h2> Please input questions and multiple choice answers</h2>
-
+ Enter the question: <input type="text" id="QuesText" value=""><br>
+ Enter the question choices: <input type="text" id="QuesChoices" value=""><br>
+ Enter the question answer: <input type="text" id="QuesAns" value=""><br>
+ Enter the question subject catagory: <input type="text" id="QuesSubject" value=""><br>
 </div>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>   
 <script type="text/javascript" src='questions.json'></script>		
