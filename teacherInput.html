@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>	
+<head>		
+<title>Dynamic Quiz Question Input</title>		
+<link type='text/css' rel='stylesheet' href='prototype.css'/>		
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open Sans"/>	
+</head>	
+<body>
+<div id = 'questNum'>   
+<h1> Teacher Only Section</h1>    
+<h2> Please input number of questions for the quiz</h2>   
+<form action="/prototype.js">
+Number of Questions for Standard Quiz: <input type="text" name="QuesNumber" value="">
+<br>
+<input type="submit" value="Submit">
+</form>
+</div>
+<div id = 'questionsInput'>
+<h2> Please input questions and multiple choice answers</h2>
+
+</div>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>   
+<script type="text/javascript" src='questions.json'></script>		
+<script type='text/javascript' src='prototype.js'></script>
+</body>
+</html>
