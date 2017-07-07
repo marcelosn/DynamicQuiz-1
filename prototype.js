@@ -93,10 +93,14 @@
                    "correctAnswer": document.getElementById("QuesAns").value
                   };
     questions[0].push(quesVar);
-    displayQues();
+    
   }
  
-  
+   $('#submit2').on('click', function (e){
+     e.preventDefault;
+   fillQuestions();
+   
+   });
   
   // Click handler for the 'next' button
    $('#next').on('click', function (e){
