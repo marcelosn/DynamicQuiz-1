@@ -5,7 +5,7 @@
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
     "correctAnswer": 3
-  }/*, {
+  }, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
@@ -31,14 +31,14 @@
     "choices": [1, 99, 108, 134, 156],
     "subject": "doubles multiplication",
     "correctAnswer": 4
-  }*/]];
+  }]];
 
-  var extraQuestions = [[{
+  /*var extraQuestions = [[{
     "question": "What is 2+5?",
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
     "correctAnswer": 3
-  }/*, {
+  }, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
@@ -96,7 +96,7 @@
     displayQues();
   }
  
-  
+  displayQues();
   
   // Click handler for the 'next' button
    $('#next').on('click', function (e){
@@ -176,6 +176,9 @@
     var radioButtons = createRadios(array, cat, index);
     qElement.append(radioButtons);
     
+    var hintClicked = false;
+    
+    //add variable to show hint, which is set to true automatically if in second array 
     return qElement;
   }
   
@@ -215,6 +218,7 @@
         //var nextQuestion = createQuestionElement(questionCounter);
         if(questionCounter<questionQueue.length){
           quiz.append(questionQueue[questionCounter]).show();
+          //if show hint is set to true, show hint variable--will probably have to edit CSS
         if (!(isNaN(selections[questionCounter]))) {//so if selections[questionCounter] is null it doesn't move
           $('input[value='+selections[questionCounter]+']').prop('checked', true);
         }
