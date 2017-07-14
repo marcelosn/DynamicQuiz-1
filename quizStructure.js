@@ -67,6 +67,7 @@
   }*/]];
   
   var questionCounter = 0;//question number
+  var submittedQuestions = 0;
   var hasAdded = 0;
   var catagory = 0;//array number
   var selections = []; //Array containing user choices
@@ -84,7 +85,7 @@
   
   function numQuestions(){
     var teacherInput = document.getElementById("QuesNumber").value;
-  }
+}
   
   function fillQuestions(){
     var quesVar = {"question": document.getElementById("QuesText").value,   
@@ -92,10 +93,24 @@
                    "subject": document.getElementById("QuesSubject").value,    
                    "correctAnswer": document.getElementById("QuesAns").value
                   };
+    if(submittedQuestions<teacherInput){
     questions[0].push(quesVar);
-    
+      submittedQuestions++;
+    }
+    else if(submittedQuestions>==teacherInput&&submittedQuestions<teacherInput*2){
+      questions[1].push(quesVar);
+      submittedQuestions++;
+    }
+    else{
+      //quiz is full, ready to load
+    }
   }
- 
+
+ $('#submit1').on('click', function (e){
+   e.preventDefault;   
+   numQuestions();      
+ }); 
+
    $('#submit2').on('click', function (e){
      e.preventDefault;
    fillQuestions();
