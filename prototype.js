@@ -4,32 +4,38 @@
     "question": "What is 2+5?",
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
+    "hint": "wut",
     "correctAnswer": 3
   }, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
+    "hint": "wut",
     "correctAnswer": 2
   }, {
     "question": "What is 9+8?",
     "choices": [17, 99, 108, 134, 156],
     "subject":"singles addition",
+    "hint": "wut",
     "correctAnswer": 0
   }],//establishes array of questions
    [{
     "question": "What is 3*5?",
     "choices": [2, 5, 10, 15, 20],
     "subject":"singles multiplication",
+     "hint": "wut",
     "correctAnswer": 3
   }, {
     "question": "What is 60/5?",
     "choices": [3, 6, 18, 12, 9],
     "subject": "doubles division",
+    "hint": "wut",
     "correctAnswer": 3
   }, {
     "question": "What is 156*1?",
     "choices": [1, 99, 108, 134, 156],
     "subject": "doubles multiplication",
+    "hint": "wut",
     "correctAnswer": 4
   }]];
 
@@ -74,6 +80,9 @@
   var questionQueue = [];//Quis Ques up to display
   var catNum = [];
   var catScores = [];
+  var hintBox = $('#hintBox');//hint box div object
+  var hintsUsed = 0;
+  var hintDisplayed = false;
   for(i = 0; i<questions.length; i++){
     catScores[i] = 0;
     catNum[i] = 0;
@@ -138,7 +147,12 @@
     questionCounter--;
     displayQues();
   };
-  
+$('#hint').onclick=function(){ 
+//how to do hint boolean? global variable
+  hintDisplayed = true;
+  hintsUsed++;
+  showHint();
+};    
   // Click handler for the 'Start Over' button
   $('#start').onclick = function() {
     //e.preventDefault();
@@ -176,8 +190,6 @@
     var radioButtons = createRadios(array, cat, index);
     qElement.append(radioButtons);
     
-    var hintClicked = false;
-    
     //add variable to show hint, which is set to true automatically if in second array 
     return qElement;
   }
@@ -203,7 +215,14 @@
   }
   
   // Displays next requested element
-  function displayQues() {
+function displayHint(array, catagory, index){
+  var hint = $('<div>', {      id: 'hint'    });    
+  hint.append(array[catagory][index].hint);
+  hintbox.append(hint);
+  hintbox.show();
+}
+
+function displayQues() {
     if (questionCounter === 0){
        var nextQuestion;
        var toAdd = questions[catagory].length;
@@ -212,8 +231,13 @@
       questionQueue.push(nextQuestion);
     }
     }
+
     quiz.hide(function() {
       $('#question').remove();
+        if (hintDisplayed == true){            
+          $('#hint').remove();    
+          hintDisplayed = false;  
+        }
       //if(questionCounter < questions.length){
         //var nextQuestion = createQuestionElement(questionCounter);
         if(questionCounter<questionQueue.length){
@@ -251,6 +275,7 @@
       var index = 0;
       var numCorrect = 0;
       var numWrong = 0;
+      numWrong+=hintsUsed/2;
         for (var i = catNum[0]+catNum[1]; i < selections.length; i++) {
       if (selections[i] === extraQuestions[1][index].correctAnswer) {
         numCorrect++;
@@ -272,6 +297,7 @@
       var index = 0;
       var numCorrect = 0;
       var numWrong = 0;
+      numWrong = hintsUsed/2;
         for (var i = catNum[0]; i < selections.length; i++) {
       if (selections[i] === extraQuestions[0][index].correctAnswer) {
         numCorrect++;
@@ -299,6 +325,7 @@
     var numCorrect = 0;
     var numWrong = 0;
     var index = 0;
+     numWrong = hintsUsed/2;
     for (var i = catNum[0]+catNum[1]; i < selections.length; i++) {
       if (selections[i] === questions[catagory][index].correctAnswer) {
         numCorrect++;
