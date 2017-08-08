@@ -1,102 +1,63 @@
-
 (function() {
   var questions = [[{
     "question": "What is 2+5?",
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
+    "hint": "wut",
     "correctAnswer": 3
-  }/*, {
+  }, {
     "question": "What is 3+6?",
     "choices": [3, 6, 9, 12, 18],
     "subject": "singles addition",
+    "hint": "wut",
     "correctAnswer": 2
   }, {
     "question": "What is 9+8?",
     "choices": [17, 99, 108, 134, 156],
     "subject":"singles addition",
+    "hint": "wut",
     "correctAnswer": 0
   }],//establishes array of questions
    [{
     "question": "What is 3*5?",
     "choices": [2, 5, 10, 15, 20],
     "subject":"singles multiplication",
+     "hint": "wut",
     "correctAnswer": 3
   }, {
     "question": "What is 60/5?",
     "choices": [3, 6, 18, 12, 9],
     "subject": "doubles division",
+    "hint": "wut",
     "correctAnswer": 3
   }, {
     "question": "What is 156*1?",
     "choices": [1, 99, 108, 134, 156],
     "subject": "doubles multiplication",
+    "hint": "wut",
     "correctAnswer": 4
-  }*/]];
-
-  var extraQuestions = [[{
-    "question": "What is 2+5?",
-    "choices": [2, 5, 10, 7, 20],
-    "subject": "singles addition",
-    "correctAnswer": 3
-  }/*, {
-    "question": "What is 3+6?",
-    "choices": [3, 6, 9, 12, 18],
-    "subject": "singles addition",
-    "correctAnswer": 2
-  }, {
-    "question": "What is 9+8?",
-    "choices": [17, 99, 108, 134, 156],
-    "subject": "singles addition",
-    "correctAnswer": 0
-  }],//establishes array of questions
-   [{
-    "question": "What is 10*5?",
-    "choices": [2, 5, 10, 15, 50],
-    "subject": "doubles multiplication",
-    "correctAnswer": 4
-  }, {
-    "question": "What is 200/25?",
-    "choices": [3, 6, 8, 12, 9],
-    "subject": "doubles division",
-    "correctAnswer": 2
-  }, {
-    "question": "What is 20*4?",
-    "choices": [1, 99, 80, 134, 156],
-    "subject": "doubles multiplication",
-    "correctAnswer": 2
-  }*/]];
-  
+  }]];
   var questionCounter = 0;//question number
   var hasAdded = 0;
   var catagory = 0;//array number
   var selections = []; //Array containing user choices
   var quiz = $('#quiz'); //Quiz div object
-  var questionQueue = [];//Quis Ques up to display
-  var catNum = [];
-  var catScores = [];
-  for(i = 0; i<questions.length; i++){
-    catScores[i] = 0;
-    catNum[i] = 0;
-  }
-  }
-
-  // Display initial question
+  var questionQueue = [];//Quis Ques up to displ(ay
+    var catNum = [];
+    var catScores = [];
+    var hintBox = $('#hintBox');//hint box div object
+    var hintsUsed = 0;
+    var hintDisplayed = false;
+    for(i = 0; i<questions.length; i++){
+      catScores[i] = 0;
+      catNum[i] = 0;
+    }
   
-  function numQuestions(){
-    var teacherInput = document.getElementById("QuesNumber").value;
-  }
-  
-  function fillQuestions(){
-    var quesVar = {"question": document.getElementById("QuesText").value,   
-                   "choices": [2, 5, 10, 15, 50],    
-                   "subject": document.getElementById("QuesSubject").value,    
-                   "correctAnswer": document.getElementById("QuesAns").value
-                  };
-    questions[0].push(quesVar);
+    // Display initial question
+    $('#instrucVid').hide();
+    $('#hintBox').hide();
     displayQues();
-  }
- 
-  
+
   
   // Click handler for the 'next' button
    $('#next').on('click', function (e){
@@ -123,6 +84,8 @@
       questionCounter1++;*/
       else{
         questionCounter++;
+        hintDisplayed = false;
+        hintBox.hide();
       displayQues();
     }
   });
@@ -138,6 +101,18 @@
     questionCounter--;
     displayQues();
   };
+
+  $('#hint').on('click', function (e){ 
+//how to do hint boolean? global variable
+  if (hintDisplayed ===true)
+  {
+    alert("Hint is already given!")
+  }
+  else{
+  hintDisplayed = true;
+  hintsUsed++;
+  displayHint(questions, catagory, questionCounter-(catagory*questions[catagory].length));//check that this is write when ques are added
+}}); 
   
   // Click handler for the 'Start Over' button
   $('#start').onclick = function() {
@@ -198,6 +173,20 @@
   function choose() {
     selections[questionCounter] = +$('input[name="answer"]:checked').val();
   }
+
+  function displayHint(array, catagory, index){
+  var hint = $('<div>', {      id: 'hint'    });    
+  hint.append(array[catagory][index].hint);
+  hintBox.append(hint);
+  hintBox.show();
+  $('#hintBox').show();
+}
+
+  function displayVid(){
+     var video = "https://www.youtube.com/embed/Fe8u2I3vmHU";
+     $('#instrucVid').attr("src", video);
+     $('#instrucVid').show(); 
+  }
   
   // Displays next requested element
   function displayQues() {
@@ -211,10 +200,16 @@
     }
     quiz.hide(function() {
       $('#question').remove();
+      if (hintDisplayed == true){            
+          $('#hintBox').remove();    
+          hintDisplayed = false;  
+        }
       //if(questionCounter < questions.length){
         //var nextQuestion = createQuestionElement(questionCounter);
         if(questionCounter<questionQueue.length){
+           displayVid();
           quiz.append(questionQueue[questionCounter]).show();
+         
         if (!(isNaN(selections[questionCounter]))) {//so if selections[questionCounter] is null it doesn't move
           $('input[value='+selections[questionCounter]+']').prop('checked', true);
         }
