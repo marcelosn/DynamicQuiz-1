@@ -37,15 +37,55 @@
     "hint": "wut",
     "correctAnswer": 4
   }]];
+  var extraQuestions = [[{
+    "question": "What is 4+12?",
+    "choices": [12, 15, 16, 17, 20],
+    "subject": "singles addition",
+    "hint": "wut",
+    "correctAnswer": 3
+  }, {
+    "question": "What is 3+9?",
+    "choices": [11, 6, 19, 12, 18],
+    "subject": "singles addition",
+    "hint": "wut",
+    "correctAnswer": 3
+  }, {
+    "question": "What is 12+8?",
+    "choices": [17, 20, 128, 21, 15],
+    "subject": "singles addition",
+    "hint": "wut",
+    "correctAnswer": 1
+  }],//establishes array of questions
+   [{
+    "question": "What is 10*5?",
+    "choices": [2, 5, 10, 15, 50],
+    "subject": "doubles multiplication",
+    "hint": "wut",
+    "correctAnswer": 4
+  }, {
+    "question": "What is 200/25?",
+    "choices": [3, 6, 8, 12, 9],
+    "subject": "doubles division",
+    "hint": "wut",
+    "correctAnswer": 2
+  }, {
+    "question": "What is 20*4?",
+    "choices": [1, 99, 80, 134, 156],
+    "subject": "doubles multiplication",
+    "hint": "wut",
+    "correctAnswer": 2
+  }]];
   var questionCounter = 0;//question number
   var hasAdded = 0;
   var catagory = 0;//array number
+  var maxCatagories = 2;
   var selections = []; //Array containing user choices
   var quiz = $('#quiz'); //Quiz div object
   var questionQueue = [];//Quis Ques up to displ(ay
     var catNum = [];
     var catScores = [];
     var hintBox = $('#hintBox');//hint box div object
+    var final = $('#final');
     var hintsUsed = 0;
     var hintDisplayed = false;
     for(i = 0; i<questions.length; i++){
@@ -56,6 +96,7 @@
     // Display initial question
     $('#instrucVid').hide();
     $('#hintBox').hide();
+    final.hide();
     displayQues();
 
   
@@ -177,7 +218,12 @@
   function displayHint(array, catagory, index){
   var hint = $('<div>', {      id: 'hint'    });    
   hint.append(array[catagory][index].hint);
-  hintBox.append(hint);
+  if (hintBox.length){
+  	hintBox.empty();
+  	hintBox.append(hint);
+  }
+  else{
+  	hintBox.append(hint);}
   hintBox.show();
   $('#hintBox').show();
 }
@@ -201,7 +247,8 @@
     quiz.hide(function() {
       $('#question').remove();
       if (hintDisplayed == true){            
-          $('#hintBox').remove();    
+          $('#hintBox').remove();
+          $('#hint').remove();    
           hintDisplayed = false;  
         }
       //if(questionCounter < questions.length){
@@ -231,19 +278,26 @@
       }
     });
   }
-  
+
   // Computes score and returns a paragraph element to be displayed
+  //make more flexible so it can have more than 2 catagories
   function calcScore() {
-    var score = $('<p>',{id: 'question'});
+    var score = $('#final');
     $('#next').hide();
     $('#prev').hide();
+    $('#hint').hide();
+    $('#instrucVid').hide();
     var percentage;
-    if(questionCounter>=questionQueue.length&&catagory===1&&hasAdded===1){//end of questions
+    if(questionCounter>=questionQueue.length&&catagory===(maxCatagories-1)&&hasAdded===1){//end of questions
       var index = 0;
       var numCorrect = 0;
       var numWrong = 0;
-        for (var i = catNum[0]+catNum[1]; i < selections.length; i++) {
-      if (selections[i] === extraQuestions[1][index].correctAnswer) {
+      var sum = 0;
+      for (var s = 0; s< maxCatagories; s++){
+      	sum +=catNum[s];
+      }
+        for (var i = sum; i < selections.length; i++) {
+      if (selections[i] === extraQuestions[catagory][index].correctAnswer) {
         numCorrect++;
         index++;
       }
@@ -252,19 +306,24 @@
         index++;
       }
     }
-      catScores[1]+=numCorrect;
-      catNum[1] = numWrong+numCorrect;
+      catScores[catagory]+=numCorrect - hintsUsed*.5;
+      catNum[catagory] = numWrong+numCorrect;
       percentage = (catScores[0]+catScores[1])/selections.length;
-      score.append(percentage);
+      final.append('Your final score is: '+percentage*100);
       questionCounter = 0;
+      final.show();
       return score;
     }
-    else if (questionCounter>=questionQueue.length&&hasAdded===1&&catagory===0){//1 catagory is done
+    else if (questionCounter>=questionQueue.length&&hasAdded===1&&catagory<(maxCatagories-1)){//1 catagory is done
       var index = 0;
       var numCorrect = 0;
       var numWrong = 0;
-        for (var i = catNum[0]; i < selections.length; i++) {
-      if (selections[i] === extraQuestions[0][index].correctAnswer) {
+      var sum = 0;
+      for (var s = 0; s< maxCatagories; s++){
+      	sum +=catNum[s];
+      }
+        for (var i = sum; i < selections.length; i++) {
+      if (selections[i] === extraQuestions[catagory][index].correctAnswer) {
         numCorrect++;
         index++;
       }
@@ -273,9 +332,9 @@
         index++;
       }
     }
-      catScores[0]+=numCorrect;
-      catagory = 1;
-      catNum[0] = numWrong+numCorrect;
+      catScores[catagory]+=numCorrect-hintsUsed*.5;
+      catagory++;
+      catNum[catagory] = numWrong+numCorrect;
       var temp;
        for (var i = 0; i<questions[catagory].length; i++){
         temp = createQuestionElement(questions, catagory, i)
@@ -286,11 +345,15 @@
       $('#next').show();
     }
 
-    else{//if catagory is 0 or 1and hasAdded is false
+    else{//if catagory is 0 or 1 and hasAdded is false
     var numCorrect = 0;
     var numWrong = 0;
     var index = 0;
-    for (var i = catNum[0]+catNum[1]; i < selections.length; i++) {
+    var sum = 0;
+    for (var s = 0; s< maxCatagories; s++){
+      	sum +=catNum[s];
+      }
+    for (var i = sum; i < selections.length; i++) {
       if (selections[i] === questions[catagory][index].correctAnswer) {
         numCorrect++;
         index++;
@@ -301,10 +364,11 @@
       }
     }
     catNum[catagory] = numWrong+numCorrect;
-    var scoreRatio = Math.round(numWrong/numCorrect);
-    catScores[catagory] +=numCorrect;
-    if (scoreRatio ===0&&catagory===0){
-      catagory = 1;
+    var finalScore = numCorrect-(hintsUsed*.5);
+    var scoreRatio = Math.round(numWrong+(hintsUsed*.5)/numCorrect);
+    catScores[catagory] +=finalScore;
+    if (scoreRatio ===0&&catagory<maxCatagories-1){
+      catagory++;
       hasAdded = 0;
       var temp;
       for (var i = 0; i<questions[catagory].length; i++){
@@ -313,13 +377,20 @@
       
     }
      $('#next').show();
+     $('#hint').show();
+     hintsUsed = 0;
     displayQues();
     }
-     else if (scoreRatio ===0&&catagory===1){//end
-      percentage = (catScores[0]+catScores[1])/selections.length;
-      score.append('Final score is: '+percentage);
+     else if (scoreRatio ===0&&catagory===maxCatagories){//end
+     	var sumScores = 0;
+     for (var s = 0; s< maxCatagories; s++){
+      	sumScores +=catScores[s];
+      }
+      percentage = sumScores/selections.length;
+      final.append('Final score is: '+percentage*100);
       questionCounter = 0;
       $('#start').show();
+      final.show();
       return score;
     }
     else{//add from extraQuestions
@@ -330,6 +401,8 @@
     }
     hasAdded=1;
      $('#next').show();
+     $('#hint').show();
+     hintsUsed = 0;
     displayQues();
   }
   }
