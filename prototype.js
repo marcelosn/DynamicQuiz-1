@@ -88,6 +88,7 @@
     var final = $('#final');
     var hintsUsed = 0;
     var hintDisplayed = false;
+    var progress = 0;
     for(i = 0; i<questions.length; i++){
       catScores[i] = 0;
       catNum[i] = 0;
@@ -215,6 +216,21 @@
     selections[questionCounter] = +$('input[name="answer"]:checked').val();
   }
 
+  
+  function progressMove(lastprogress, progress) {
+  var elem = document.getElementById("ProgBar");   
+  var width = 1;
+  var id = setInterval(frame, lastprogress);
+  function frame() {
+    if (width >= progress) {
+      clearInterval(id);
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+    }
+  }
+}
+
   function displayHint(array, catagory, index){
   var hint = $('<div>', {      id: 'hint'    });    
   hint.append(array[catagory][index].hint);
@@ -236,6 +252,7 @@
   
   // Displays next requested element
   function displayQues() {
+    var lastprogress = progress;
     if (questionCounter === 0){
        var nextQuestion;
        var toAdd = questions[catagory].length;
@@ -244,6 +261,8 @@
       questionQueue.push(nextQuestion);
     }
     }
+    progress = (questionQueue.length/questionCounter)+1;
+    /*progressMove(lastprogress, progress);*/
     quiz.hide(function() {
       $('#question').remove();
       if (hintDisplayed == true){            

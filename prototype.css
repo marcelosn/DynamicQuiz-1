@@ -6,6 +6,33 @@ h1 {
     text-align: center;
 }
 
+#StudentProgress{
+  width: 35%;
+  position:relative;
+  left:800px;
+  border:4px solid #B0E0E6;
+  top:40px;
+  background-color: #ddd;
+  border-color: green;
+}
+
+#ProgBar {
+  width: 1%;
+  height: 30px;
+  left:750px;
+  top:20px;
+  background-color: #4CAF50;
+}
+#BarLabel{
+    color: green;
+    background-color: white;
+    position: relative;
+    left:-100px;
+    top:80px;
+    float: right;
+    font-size:small;
+}
+
 #title {
     text-decoration: bold;
     color: green;
@@ -39,11 +66,12 @@ h1 {
 
 #hintBox{
 border:4px solid #B0E0E6;
-width:40%;
-
+width:35%;
 position:relative;
 background-color:green;
-left:600px;
+left:800px;
+top:100px;
+right: 100px;
 }
 #final{
 border:4px solid #B0E0E6;
@@ -91,7 +119,7 @@ background-color:white;
     position: relative;
     top: 350px;
    
-    left:-500px;
+    left:-600px;
     float:right;
     background-color: #DCDCDC;
     color: black;
