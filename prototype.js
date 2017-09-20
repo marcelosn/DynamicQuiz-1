@@ -261,8 +261,8 @@
       questionQueue.push(nextQuestion);
     }
     }
-    progress = (questionQueue.length/questionCounter)+1;
-    /*progressMove(lastprogress, progress);*/
+    progress = 100/(questionQueue.length*(questionCounter+1));
+    progressMove(lastprogress, progress);
     quiz.hide(function() {
       $('#question').remove();
       if (hintDisplayed == true){            

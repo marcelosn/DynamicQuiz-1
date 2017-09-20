@@ -24,13 +24,16 @@ h1 {
   background-color: #4CAF50;
 }
 #BarLabel{
-    color: green;
+      color: green;
     background-color: white;
     position: relative;
     left:-100px;
     top:80px;
     float: right;
-    font-size:small;
+    font-size:medium;
+    padding-left:inherit;
+    padding-right:15px;
+    box-shadow: 2px 2px 2px #888;
 }
 
 #title {
