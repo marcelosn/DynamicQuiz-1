@@ -5,10 +5,10 @@
    if($_SERVER["REQUEST_METHOD"] == "POST") {
       // username and password sent from form 
       
-      $myname = mysqli_real_escape_string($db,$_POST['name']);
-      $myID = mysqli_real_escape_string($db,$_POST['studentID']); 
+      $myname = mysqli_real_escape_string($db,$_POST['id']);
+      $myID = mysqli_real_escape_string($db,$_POST['password']); 
       
-      $sql = "SELECT id FROM admin WHERE username = '$myname' and passcode = '$myID'";
+      $sql = "SELECT number FROM studentlist WHERE id = '$myname' and password = '$myID'";
       $result = mysqli_query($db,$sql);
       $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
       $active = $row['active'];
@@ -16,12 +16,14 @@
       $count = mysqli_num_rows($result);
       
       // If result matched $myusername and $mypassword, table row must be 1 row
-		
+		//echo "count is $count";
       if($count == 1) {
-         session_register("myname");
+         //echo "inside the if!!!";
+         /*session_register("myname");*/
          $_SESSION['login_user'] = $myname;
-         
-         header("location: quiz.php");
+
+         //echo $myname;
+         header("location: quizForm.php");
       }else {
          $error = "Your Login Name or Password is invalid";
       }
@@ -61,8 +63,8 @@
             <div style = "margin:30px">
                
                <form action = "" method = "post">
-                  <label>Name  :</label><input type = "text" name = "username" class = "box"/><br /><br />
-                  <label>ID  :</label><input type = "password" name = "password" class = "box" /><br/><br />
+                  <label>ID  :</label><input type = "text" name = "id" class = "box"/><br /><br />
+                  <label>Password  :</label><input type = "password" name = "password" class = "box" /><br/><br />
                   <input type = "submit" value = " Submit "/><br />
                </form>
                
