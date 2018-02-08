@@ -397,15 +397,21 @@ if (video!= ""){
   }
   
   // Displays next requested element
-  function displayQues() {
-    var lastprogress = progress;
-    if (questionCounter === 0){
-       var nextQuestion;
-       var toAdd = questions[catagory].length;
-    for (i = 0; i<questions[catagory].length; i++){
+  function loadQueue()
+  {
+  var nextQuestion;
+      
+    for (i = catNum[catagory]; i<toAdd; i++){
       nextQuestion = createQuestionElement(questions, catagory, i);
       questionQueue.push(nextQuestion);
     }
+
+  }
+
+  function displayQues() {
+    var lastprogress = progress;
+    if (catNum[catagory] == 0){
+      loadQueue();
     }
     progress = 100/(questionQueue.length*(questionCounter+1));
     //progressMove(lastprogress, progress);
@@ -426,7 +432,7 @@ if (video!= ""){
           $('input[value='+selections[questionCounter]+']').prop('checked', true);
         }
         
-        // Controls display of 'prev' button--should I even keep it? Given that this is supposed to be constant?
+        // Controls display of 'prev' button--should I keep it? is it even relevant?
         if(questionCounter >= 1){
           $('#prev').show();
         } else if(questionCounter === 0){
@@ -436,8 +442,7 @@ if (video!= ""){
         }
       }
         else {
-        calcScore();//fix: check user group. if not dynamic, get random next number
-
+        calcScore();
         /*quiz.append(scoreElem).show();
         $('#next').hide();
         $('#prev').hide();*/
@@ -445,7 +450,7 @@ if (video!= ""){
     });
   }
 
-  function calcPercentage(){
+  /*function calcPercentage(){
     var percen;
     var sumScores=0;
     var sumQuestions=0;
@@ -455,26 +460,26 @@ if (video!= ""){
       }
       percen = sumScores/sumQuestions;
       return percen;
-  }
+  }*/
 
   // Computes score and returns a paragraph element to be displayed
   //make more flexible so it can have more than 2 catagories
-  function calcScore() {
+ 
+function calcScore() {//attenuated version
     var score = $('#final');
     $('#next').hide();
     $('#prev').hide();
     $('#hint').hide();
     $('#instrucVid').hide();
-    if(questionCounter>=questionQueue.length&&catagory===(maxCatagories-1)&&hasAdded===1){//end of questions
-      var index = 0;
-      var numCorrect = 0;
-      var numWrong = 0;
-      var sum = 0;
-      for (var s = 0; s< maxCatagories; s++){
+    var sum = 0;
+    var numWrong = 0;
+    var numCorrect = 0;
+      for (var s = 0; s==catagory; s++){
         sum +=catNum[s];
       }
-        for (var i = sum; i < selections.length; i++) {
-      if (selections[i] === parseInt(extraQuestions[catagory][index].correctAnswer)) {
+      var index;
+      for (var i = sum; i < selections.length; i++) {
+      if (selections[i] === parseInt(questions[catagory][catNum[catagory]+index].correctAnswer)) {
         numCorrect++;
         index++;
       }
@@ -483,110 +488,32 @@ if (video!= ""){
         index++;
       }
     }
-      catScores[catagory]+=numCorrect;
-      catNum[catagory] += numWrong+numCorrect;
-      percentage = calcPercentage();
-      final.append('Final score is: '+percentage*100);
-      questionCounter = 0;
+    catNum[catagory]+=(numWrong+numCorrect);
+    catScores[catagory]+=(numCorrect);
+    var scoreRatio = (selections.length-sum)/(numWrong+hintsUsed);
+    nextAdd = Math.round(scoreRatio*(numWrong+numCorrect));
+    if ((catNum[catagory]+nextAdd)>questions[catagory].length){
+      catagory++; 
+      toAdd = initial;
+      displayQues();
+    }
+    else if (((catNum[catagory]+nextAdd)>questions[catagory].length)&&catagory===maxCatagories-1){
+        
+        final.append('Final score is: '+percentage*100);
+        questionCounter = 0;
       //percentage = ((catScores[0]-hintsUsed[catagory]*.5)+catScores[1])/selections.length;
       
-      final.show();
+        final.show();
        $('#finish').show();
-      //return score;
     }
-    else if (questionCounter>=questionQueue.length&&hasAdded===1&&catagory<=(maxCatagories-1)){//1 catagory is done
-      var index = 0;
-      var numCorrect = 0;
-      var numWrong = 0;
-      var sum = 0;
-      for (var s = 0; s< maxCatagories; s++){
-        sum +=catNum[s];
-      }
-        for (var i = sum; i < selections.length; i++) {
-      if (selections[i] === parseInt(extraQuestions[catagory][index].correctAnswer)) {
-        numCorrect++;
-        index++;
-      }
-      else{
-        numWrong++;
-        index++;
-      }
-    }
-      catScores[catagory]+=numCorrect;
-      catNum[catagory] += numWrong+numCorrect;
-      catagory++;
-      var temp;
-       for (var i = 0; i<questions[catagory].length; i++){
-        temp = createQuestionElement(questions, catagory, i)
-        questionQueue.push(temp);
-      }
-      hasAdded = 0;
-      displayQues();
-      $('#next').show();
-    }
-
-    else{//if catagory is 0 or 1 and hasAdded is false
-    var numCorrect = 0;
-    var numWrong = 0;
-    var index = 0;
-    var sum = 0;
-    for (var s = 0; s< maxCatagories; s++){
-        sum +=catNum[s];
-      }
-    for (var i = sum; i < selections.length; i++) {
-      if (selections[i] === parseInt(questions[catagory][index].correctAnswer)) {
-        numCorrect++;
-        index++;
-      }
-      else{
-        numWrong++;
-        index++;
-      }
-    }
-    catNum[catagory] = numWrong+numCorrect;
-    catScores[catagory]+=numCorrect;
-    var scoreRatio = (numWrong+(hintsUsed*.5))/catNum[catagory];
-    if (scoreRatio ===0&&catagory<=maxCatagories-1){
-      catagory++;
-      hasAdded = 0;
-      var temp;
-      for (var i = 0; i<questions[catagory].length; i++){
-      temp = createQuestionElement(questions, catagory, i)
-      questionQueue.push(temp);
-      
-    }
-     $('#next').show();
-     $('#hint').show();
-     //hintsUsed = 0;
+    else{
     displayQues();
-    }
-     else if (scoreRatio ===0&&catagory===maxCatagories-1){//end
-      percentage = calcPercentage();
-      final.append('Final score is: '+percentage*100);
-      questionCounter = 0;
-      //$('#start').show();
-      final.show();
-      $('#finish').show();
-     
-    }
-    else{//add from extraQuestions
-    var temp;
-    var newquestions = Math.round(scoreRatio*questions[catagory].length;)
-    for (var i = 0; i<scoreRatio; i++){
-      temp = createQuestionElement(extraQuestions, catagory, i)
-      questionQueue.push(temp);
-    }
-    hasAdded=1;
-     $('#next').show();
-     $('#hint').show();
-     //hintsUsed = 0;
-    displayQues();
-  }
   }
 }
+
+
 function calcScoreAlt(){//For the non-dynamic option
   //get number of total questions
-  //get number of total extraquestions
   
   
 }

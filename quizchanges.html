@@ -359,7 +359,7 @@ if (video!= ""){
   {
   var nextQuestion;
       
-    for (i = catNum[catagory]; i<toAdd; i++){
+    for (i = catNum[catagory]; i<(catNum[catagory]+nextAdd); i++){
       nextQuestion = createQuestionElement(questions, catagory, i);
       questionQueue.push(nextQuestion);
     }
@@ -368,10 +368,8 @@ if (video!= ""){
 
   function displayQues() {
     var lastprogress = progress;
-    if (catNum[catagory] == 0){
-      loadQueue();
-    }
-    progress = 100/(questionQueue.length*(questionCounter+1));
+    loadQueue();
+    progress = 100/(questionQueue.length*(selections.length+1));
     //progressMove(lastprogress, progress);
     quiz.hide(function() {
       $('#question').remove();
@@ -382,15 +380,15 @@ if (video!= ""){
         }
       //if(questionCounter < questions.length){
         //var nextQuestion = createQuestionElement(questionCounter);
-        if(questionCounter<questionQueue.length){
+        if(selections.length<questionQueue.length){
            displayVid();
-          quiz.append(questionQueue[questionCounter]).show();
+          quiz.append(questionQueue[selections.length]).show();
          
-        if (!(isNaN(selections[questionCounter]))) {//so if selections[questionCounter] is null it doesn't move
-          $('input[value='+selections[questionCounter]+']').prop('checked', true);
+        if (!(isNaN(selections[selections.length]))) {//so if selections[questionCounter] is null it doesn't move
+          $('input[value='+selections[selections.length]+']').prop('checked', true);
         }
         
-        // Controls display of 'prev' button
+        // Controls display of 'prev' button--should I keep it? is it even relevant?
         if(questionCounter >= 1){
           $('#prev').show();
         } else if(questionCounter === 0){
@@ -429,7 +427,32 @@ if (video!= ""){
     $('#prev').hide();
     $('#hint').hide();
     $('#instrucVid').hide();
-
+    var sum = 0;
+    var numWrong = 0;
+    var numCorrect = 0;
+      for (var s = 0; s==catagory; s++){
+        sum +=catNum[s];
+      }
+      var index;
+      for (var i = sum; i < selections.length; i++) {
+      if (selections[i] === parseInt(questions[catagory][catNum[catagory]+index].correctAnswer)) {
+        numCorrect++;
+        index++;
+      }
+      else{
+        numWrong++;
+        index++;
+      }
+    }
+    catNum[catagory]+=(numWrong+numCorrect);
+    catScores[catagory]+=(numCorrect);
+    var scoreRatio = (selections.length-sum)/(numWrong+hintsUsed);
+    nextAdd = Math.round(scoreRatio*(numWrong+numCorrect));
+    if ((catNum[catagory]+nextAdd)>questions[catagory].length){
+      catagory++; 
+      toAdd = initial;
+    }
+    displayQues();
 }
 )();
 </script>
