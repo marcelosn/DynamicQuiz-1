@@ -122,9 +122,11 @@ include("session.php");
     "correctAnswer": 2
   };*/
   questions = loadQuestions(1);
-  extraQuestions = loadQuestions(2);
+  //extraQuestions = loadQuestions(2);
   var questionCounter = 0;//question number
   var hasAdded = 0;
+  var initial=1;
+  var nextAdd = initial;
   var catagory = 0;//array number
   var maxCatagories = questions.length;
   var selections = []; //Array containing user choices
@@ -205,7 +207,6 @@ include("session.php");
       return false;
     }*/
     for (var i = 0; i < maxCatagories; i++){
-    	percentage += catScores[i]-(hintsUsed[i]*.5);
    		var obj =
     	{
         "catagory": i,
@@ -401,7 +402,7 @@ if (video!= ""){
   {
   var nextQuestion;
       
-    for (i = catNum[catagory]; i<toAdd; i++){
+    for (i = catNum[catagory]; i<nextAdd; i++){
       nextQuestion = createQuestionElement(questions, catagory, i);
       questionQueue.push(nextQuestion);
     }
@@ -410,8 +411,9 @@ if (video!= ""){
 
   function displayQues() {
     var lastprogress = progress;
-    if (catNum[catagory] == 0){
+    if (hasAdded === 0){
       loadQueue();
+      hasAdded = 1;
     }
     progress = 100/(questionQueue.length*(questionCounter+1));
     //progressMove(lastprogress, progress);
@@ -424,18 +426,19 @@ if (video!= ""){
         }
       //if(questionCounter < questions.length){
         //var nextQuestion = createQuestionElement(questionCounter);
-        if(questionCounter<questionQueue.length){
+        if(selections.length<questionQueue.length){
            displayVid();
-          quiz.append(questionQueue[questionCounter]).show();
+          quiz.append(questionQueue[selections.length]).show();
          
-        if (!(isNaN(selections[questionCounter]))) {//so if selections[questionCounter] is null it doesn't move
-          $('input[value='+selections[questionCounter]+']').prop('checked', true);
+        if (!(isNaN(selections[selections.length]))) {//so if selections[questionCounter] is null it doesn't move
+          $('input[value='+selections[selections.length]+']').prop('checked', true);
         }
         
         // Controls display of 'prev' button--should I keep it? is it even relevant?
-        if(questionCounter >= 1){
+        if(selections.length !== null){
           $('#prev').show();
-        } else if(questionCounter === 0){
+        } 
+        else{
           
           $('#prev').hide();
           $('#next').show();
@@ -477,7 +480,7 @@ function calcScore() {//attenuated version
       for (var s = 0; s==catagory; s++){
         sum +=catNum[s];
       }
-      var index;
+      var index = 0;
       for (var i = sum; i < selections.length; i++) {
       if (selections[i] === parseInt(questions[catagory][catNum[catagory]+index].correctAnswer)) {
         numCorrect++;
@@ -490,15 +493,27 @@ function calcScore() {//attenuated version
     }
     catNum[catagory]+=(numWrong+numCorrect);
     catScores[catagory]+=(numCorrect);
-    var scoreRatio = (selections.length-sum)/(numWrong+hintsUsed);
+    var scoreRatio;
+    if (numWrong ==0 && hintsUsed==0)
+    {
+      scoreRatio = 0;
+    }
+    else{
+      scoreRatio = (selections.length-sum)/(numWrong+hintsUsed);
+    }
     nextAdd = Math.round(scoreRatio*(numWrong+numCorrect));
     if ((catNum[catagory]+nextAdd)>questions[catagory].length){
       catagory++; 
-      toAdd = initial;
+      hasAdded = 0;
+      nextAdd = initial;
       displayQues();
     }
-    else if (((catNum[catagory]+nextAdd)>questions[catagory].length)&&catagory===maxCatagories-1){
-        
+    else if (((catNum[catagory]+nextAdd)>questions[catagory].length)&&catagory===maxCatagories-1){//final percentage and display
+      var sum2;
+      for (var s = 0; s==catagory; s++){
+        sum2 +=catScores[s];
+      }
+      percentage = selections.length/sum2;
         final.append('Final score is: '+percentage*100);
         questionCounter = 0;
       //percentage = ((catScores[0]-hintsUsed[catagory]*.5)+catScores[1])/selections.length;
