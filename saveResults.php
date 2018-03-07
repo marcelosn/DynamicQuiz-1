@@ -4,13 +4,19 @@
     //include("session.php");
 
 	header("Content-Type: application/json; charset=UTF-8");
-	$obj = json_decode($_GET["x"]);
+	if (array_key_exists('catagory', $_POST) && array_key_exists('correct', $_POST) && array_key_exists('wrong', $_POST)&& array_key_exists('hintsUsed', $_POST)&& array_key_exists('catQuestions', $_POST)) {
 
-    $catagory =  (int)"$obj->catagory";
-	$correct =  (int)"$obj->correct";
-	$wrong =  (int)"$obj->wrong";
-	$hintsUsed =  (int)"$obj->hintsUsed";
-	$catQuestions =  (int)"$obj->catQuestions";
+    // do stuff with params
+
+} else {
+    echo 'Invalid parameters!';
+}
+
+    $catagory =  $_POST['catagory'];
+	$correct =  $_POST['correct'];
+	$wrong =  $_POST['wrong']
+	$hintsUsed =  $_POST['hintsUsed']
+	$catQuestions =  $_POST['catQuestions'];
 	
     echo "$myid";
 

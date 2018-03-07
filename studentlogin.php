@@ -1,5 +1,6 @@
 <?php
    include("config.php");
+   //session_save_path("/var/lib/php/sessions");
    session_start();
    
    if($_SERVER["REQUEST_METHOD"] == "POST") {

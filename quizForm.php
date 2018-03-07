@@ -1,5 +1,5 @@
 <?php 
-session_start();
+//session_start();
 include("config.php");
 include("session.php");
 ?>
@@ -8,8 +8,10 @@ include("session.php");
 <html>
 	<head>
 		<title>Dynamic Quiz</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link type='text/css' rel='stylesheet' href='prototype.css'/>
 		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open Sans"/>
+    
 	</head>
 	<body>
 		<div id='container'>
@@ -27,8 +29,14 @@ include("session.php");
 			<iframe id="instrucVid" scrolling="yes" height="350" width ="500" src=""></iframe>
 			<div class='button' id='next'><a href='#'>Next</a></div>
     		<div class='button' id='prev'><a href='#'>Prev</a></div>
-    		<!--<div class='button' id='start'> <a href='#'>Start Over</a></div>-->    		
-        <div class='button' id='finish'> <a href='#'>Finish</a></div>
+        <div class="alert alert-success fade in" id = "right">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+     <strong>Success!</strong> Indicates a successful or positive action.
+            </div>
+            <div class="alert alert-warning fade in" id="wrong">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Warning!</strong> Indicates a warning that might need attention.
+</div>
 			<div class = 'actionButton' id= 'hint'><a href= '#'>Hint</a></div>
 			<div class = 'actionButton' id= 'logout'><a href= '#'>Log Out</a></div>
     		<!-- <button class='' id='next'>Next</a></button>
@@ -83,45 +91,8 @@ include("session.php");
     "hint": "wut",
     "correctAnswer": 4
   }]];*/
-  var extraQuestions=""; /*[[{
-    "question": "What is 4+12?",
-    "choices": [12, 15, 16, 17, 20],
-    "subject": "singles addition",
-    "hint": "wut",
-    "correctAnswer": 3
-  }, {
-    "question": "What is 3+9?",
-    "choices": [11, 6, 19, 12, 18],
-    "subject": "singles addition",
-    "hint": "wut",
-    "correctAnswer": 3
-  }, {
-    "question": "What is 12+8?",
-    "choices": [17, 20, 128, 21, 15],
-    "subject": "singles addition",
-    "hint": "wut",
-    "correctAnswer": 1
-  }],//establishes array of questions
-   [{
-    "question": "What is 10*5?",
-    "choices": [2, 5, 10, 15, 50],
-    "subject": "doubles multiplication",
-    "hint": "wut",
-    "correctAnswer": 4
-  }, {
-    "question": "What is 200/25?",
-    "choices": [3, 6, 8, 12, 9],
-    "subject": "doubles division",
-    "hint": "wut",
-    "correctAnswer": 2
-  }, {
-    "question": "What is 20*4?",
-    "choices": [1, 99, 80, 134, 156],
-    "subject": "doubles multiplication",
-    "hint": "wut",
-    "correctAnswer": 2
-  };*/
-  questions = loadQuestions(1);
+ 
+  questions = loadQuestions();
   //extraQuestions = loadQuestions(2);
   var questionCounter = 0;//question number
   var hasAdded = 0;
@@ -148,6 +119,8 @@ include("session.php");
   
     // Display initial question
     console.log("GOT HERE");
+    $('#right').hide();
+    $('#wrong').hide();
     $('#instrucVid').hide();
     $('#hintBox').hide();
     $('#logout').hide();
@@ -207,27 +180,8 @@ include("session.php");
       return false;
     }*/
     for (var i = 0; i < maxCatagories; i++){
-   		var obj =
-    	{
-        "catagory": i,
-        "correct": catScores[i],
-        "wrong":catNum[i]-catScores[i],
-        "hintsUsed": hintsUsed[i],
-        "catQuestions":catNum[i]
-    	};
-
-    dbParam = JSON.stringify(obj);
-    xmlhttp = new XMLHttpRequest();
-    var text = "";
-    xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        text= this.responseText;
-        
+      //saveQuestions();
     }
-};
-xmlhttp.open("GET", "http://localhost/saveResults.php?x="+dbParam, false);
-xmlhttp.send();//is it not sending?
-}
     
     questionCounter = 0;
 
@@ -244,7 +198,7 @@ $('#logout').onclick=function(){
 
    /* <?php
 
-   header("logout.php");
+   //header("logout.php");
    ?>*/
   };
 
@@ -284,21 +238,15 @@ $('#logout').onclick=function(){
   
   // Creates and returns the div that contains the questions and 
   // the answer selections
-  function loadQuestions(num){
-    if (num == 1){
-    obj = { "table":"questions"};
-  }
-  else {
-    obj = { "table":"extra_questions"};
-  }
+  function loadQuestions(){
+    var obj = { "table":"questions"};
 
-    dbParam = JSON.stringify(obj);
+    var dbParam = JSON.stringify(obj);
     xmlhttp = new XMLHttpRequest();
     var text = "";
     xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         text= JSON.parse(this.responseText);
-        
     }
 };
 xmlhttp.open("GET", "http://localhost/quiz.php?x="+dbParam, false);
@@ -306,6 +254,33 @@ xmlhttp.send();//is it not sending?
 if (text!= ""){
   return text;
 }
+  }
+
+  function saveQuestions(){
+    /*
+
+      var obj =
+      {
+        "catagory": i,
+        "correct": catScores[i],
+        "wrong":catNum[i]-catScores[i],
+        "hintsUsed": hintsUsed[i],
+        "catQuestions":catNum[i]
+      };
+
+    dbParam = JSON.stringify(obj);
+    xmlhttp = new XMLHttpRequest();
+    var text = "";
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        text= this.responseText;
+        
+    }
+};
+xmlhttp.open("POST",saveComments.php, false);
+xmlhttp.send("catagory="+i+"&correct="+catScores[i]+"&wrong="+(catNum[i]-catScores[i])+"&hintsUsed="
+  +hintsUsed[i]+"&catQuestions="+catNum[i]);//is it not sending?*/
+
   }
 
   function createQuestionElement(array, cat, index) {
@@ -468,7 +443,7 @@ if (video!= ""){
   // Computes score and returns a paragraph element to be displayed
   //make more flexible so it can have more than 2 catagories
  
-function calcScore() {//attenuated version
+function calcScore() {//attenuated version--tell them when more content is added
     var score = $('#final');
     $('#next').hide();
     $('#prev').hide();
@@ -527,7 +502,7 @@ function calcScore() {//attenuated version
 }
 
 
-function calcScoreAlt(){//For the non-dynamic option
+function calcScoreAlt(){//For the non-dynamic option--GETS OPTION TO SEE MORE MATERIAL
   //get number of total questions
   
   
