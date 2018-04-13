@@ -1,5 +1,6 @@
 (function() {
-  var questions = [[{
+  var questions = [[]];
+  /*var questions = [[{
     "question": "What is 2+5?",
     "choices": [2, 5, 10, 7, 20],
     "subject": "singles addition",
@@ -74,7 +75,7 @@
     "subject": "doubles multiplication",
     "hint": "wut",
     "correctAnswer": 2
-  }]];
+  }]];*/
   var questionCounter = 0;//question number
   var hasAdded = 0;
   var catagory = 0;//array number
@@ -93,6 +94,7 @@
       catScores[i] = 0;
       catNum[i] = 0;
     }
+    loadArrays();
   
     // Display initial question
     $('#instrucVid').hide();
@@ -231,6 +233,19 @@
   }
 }
 
+function loadArrays() {
+
+    var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        questions = JSON.parse(this.responseText);
+        document.getElementById("demo").innerHTML = questions[1][2].question;
+    }
+};
+xmlhttp.open("GET", "quiz.php", true);
+xmlhttp.send();
+}
+
   function displayHint(array, catagory, index){
   var hint = $('<div>', {      id: 'hint'    });    
   hint.append(array[catagory][index].hint);
@@ -261,8 +276,8 @@
       questionQueue.push(nextQuestion);
     }
     }
-    progress = (questionQueue.length/questionCounter)+1;
-    /*progressMove(lastprogress, progress);*/
+    progress = 100/(questionQueue.length*(questionCounter+1));
+    progressMove(lastprogress, progress);
     quiz.hide(function() {
       $('#question').remove();
       if (hintDisplayed == true){            
