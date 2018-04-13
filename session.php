@@ -3,7 +3,7 @@
    session_start();
    
    $user_check = $_SESSION['login_user'];
-   echo "$user_check";
+   //echo "$user_check";
    
    $ses_sql = mysqli_query($db,"select id from studentlist where id = '$user_check' ");
    

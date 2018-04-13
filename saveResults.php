@@ -3,31 +3,33 @@
     include("config.php");
     //include("session.php");
 
+    
 	header("Content-Type: application/json; charset=UTF-8");
-	if (array_key_exists('catagory', $_POST) && array_key_exists('correct', $_POST) && array_key_exists('wrong', $_POST)&& array_key_exists('hintsUsed', $_POST)&& array_key_exists('catQuestions', $_POST)) {
+	$data = json_decode(file_get_contents("php://input"));
 
-    // do stuff with params
 
-} else {
-    echo 'Invalid parameters!';
-}
 
-    $catagory =  $_POST['catagory'];
-	$correct =  $_POST['correct'];
-	$wrong =  $_POST['wrong']
-	$hintsUsed =  $_POST['hintsUsed']
-	$catQuestions =  $_POST['catQuestions'];
-	
-    echo "$myid";
 
-	$sql = "INSERT INTO  results (id, catagory,correct,wrong, hintsUsed, catQuestions) VALUES ($myid, $catagory, $correct,$wrong, $hintsUsed, catQuestions) ON DUPLICATE KEY UPDATE correct=$correct, wrong = $wrong, hintsUsed=$hintsUsed;";
-		echo "got info";
-		/*
+     $catagory =  mysqli_real_escape_string($db, $data->catagory);
+	$correct =  mysqli_real_escape_string($db, $data->correct);
+	$wrong =  mysqli_real_escape_string($db, $data->wrong);
+	$hintsUsed =  mysqli_real_escape_string($db, $data->hintsUsed);
+	$catNum = mysqli_real_escape_string($db, $data->catNum);
 
-		if (mysqlki_query($db, $sql)) === TRUE) {
+   
+	 $dt = new DateTime();
+	 $date = $dt->format('Y-m-d H:i:s');
+	 //echo $date;
+
+    $userID= $_SESSION['login_user'];
+    
+
+	$sql = mysqli_query($db, "INSERT INTO  results (id, catagory,correct,wrong, hintsUsed, catQuestions, timesubmitted) VALUES ($userID, $catagory, $correct,$wrong, $hintsUsed, $catNum, '$date')");
+
+		if ($sql === TRUE) {
     echo "question saved!";
 	} else {
     echo "Error: " . $sql . "<br>" . $db->error;
-	}*/
+	}
 
     ?>

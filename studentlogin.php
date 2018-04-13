@@ -22,6 +22,8 @@
          //echo "inside the if!!!";
          /*session_register("myname");*/
          $_SESSION['login_user'] = $myname;
+         $sql2 = "UPDATE studentlist SET activated = 1 WHERE id = '$myname'";
+         $activated = mysqli_query($db,$sql);
 
          //echo $myname;
          header("location: quizForm.php");

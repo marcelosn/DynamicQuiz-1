@@ -9,34 +9,19 @@
     $obj = json_decode($_GET["x"]);
    //$obj = $_REQUEST["x"];
     $dbName = "$obj->table";
-    //echo "pls work";
-   //echo "$dbName";
-   
-   $questions = mysqli_query($db, "SELECT * FROM $dbName");
-   //echo count($questions);
-
-   $num_rows = mysqli_num_rows($questions);
-   //echo "$num_rows";
-   global $ques_num;
-   $ques_num = 1;
-   //echo "$ques_num";
-   $questions_array = Array();
-   //Get all the catagories
-   for ($i = 1; $i<=$num_rows; $i++){
-   //$i=1;
-   //echo "$ques_num";
-   //echo "$i";
-    
+    $i = "$obj->catagory";
+    $ques_num = "$obj->quesNum";
+  
     $result = mysqli_query($db, "SELECT * FROM $dbName WHERE catagory = $i");
     
     //$res = mysqli_fetch_assoc($result);
     $cat_num = mysqli_num_rows($result);
     if($cat_num != 0) {
-      $catagory_array = Array();
-      for ($x = 0; $x<$cat_num;$x++){
+      //$catagory_array = Array();
+      //for ($x = 0; $x<$cat_num;$x++){
 
       //echo "$ques_num";
-      $quessel = mysqli_query($db, "SELECT * FROM $dbName WHERE catagory = $i AND question_num = $ques_num;"); //this request doesn't account for catagory
+      $quessel = mysqli_query($db, "SELECT * FROM $dbName WHERE catagory = $i AND question_num = (SELECT MIN(question_num) FROM $dbName WHERE catagory = $i AND question_num>=((SELECT MIN(question_num) FROM $dbName WHERE catagory = $i)+$ques_num))"); //this request doesn't account for catagory
       
       $newques = mysqli_fetch_assoc($quessel);
       $isthere = mysqli_num_rows($quessel);
@@ -44,7 +29,7 @@
       //echo json_encode($data);}}}
       
       if($isthere != 0){
-        $question = $newques["question_body"];
+      $question = $newques["question_body"];
           //echo $question;
         $a = $newques["question_a"];
         $b = $newques["question_b"];
@@ -63,22 +48,11 @@
         $newQuestion->catagory = $subject;
         $newQuestion->hint = $hint;
         $jsonQues = json_encode($newQuestion);
-        //echo $jsonQues;
-
-        
-        array_push($catagory_array, $newQuestion);
-        //echo count($catagory_array);
-        $ques_num= $ques_num+1;
+       
           }
-      //$catagory_array = json_encode($catagory_array);
-      //echo count($questions_array);
+      
       }
-      array_push($questions_array, $catagory_array);
-    }
-    
-   }
-   global $final_encode;
-$final_encode = json_encode($questions_array);
-echo $final_encode; 
+      
+echo $jsonQues; 
    ?>
  
