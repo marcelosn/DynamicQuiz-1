@@ -1,4 +1,5 @@
 <?php
+session_start();
    define('DB_SERVER', 'localhost');
    define('DB_USERNAME', 'quizUser');
    define('DB_PASSWORD', 'dynAmic4998!');

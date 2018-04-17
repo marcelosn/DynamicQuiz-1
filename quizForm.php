@@ -1,5 +1,5 @@
 <?php 
-//session_start();
+session_start();
 include("config.php");
 include("session.php");
 ?>
@@ -22,7 +22,7 @@ include("session.php");
         <div class = "row">
       <div class = "col-md-2">
       </div>
-      <div class="col-md-8">
+      <div class="col-md-9">
       </br>
       <iframe id="instrucVid" scrolling="yes" src=""></iframe>
       </div>
@@ -30,31 +30,43 @@ include("session.php");
     </div>
 
         </br>
-      </br>
+      <div class = "col-md-1">
+      </div>
+      <div class = "col-md-11">
       <div id='container'>
       
      <div class = "row">
-      <div class="col-md-8">
+      <div class = "col-md-12">
         </br>
-        <div id='quiz'></div>
+
+        <div id='quiz' style = "padding:20px;"></div>
         
-        </div>
-        <div class="col-md-4">
-      <div id ='hintBox' style = "top:35px;float:right;"></div>
         
+    </div>
+  </br>
+    <div class = "row">
+      <div class = "col-md-1">
+      </div>
+      <div class="col-md-10">
+      </br>
+        <button type="button" class="btn btn-info" id='next' style="position:relative;float:left;">Next</button>
+        <button type="button" class="btn btn-primary" id ='finish' style="position:relative;float:left;top:35px;left:400px;">Finish</button>
+        <button type="button" class="btn btn-success" id='hint' style="position:relative; float:right;">Hint</button>
+      </div>
+
+     <!-- <div class = "col-md-4" style = "top:35px;">-->
+      
+    <!--</div>-->
+    </div>
+    </br>
+        <div class="row">
+          <div class = "col-md-1">
+      </div>
+      <div class = "col-md-11">
+      <div id ='hintBox' style = "width:90%"></div>
       </div>
     </div>
-    <div class = "row">
-      <div class="col-md-8">
-        <button type="button" class="btn btn-info" id='next' style="position:relative;float:left;top:35px;left:400px;">Next</button>
-        <button href = "logout.php" type="button" class="btn btn-primary" id ='finish' style="position:relative;float:left;top:35px;left:400px;">Finish</button>
-      </div>
-      <div class = "col-md-4" style = "top:35px;">
-      <button type="button" class="btn btn-success" id='hint' style="position:relative;">Hint</button>
-    </div>
-    </div>
-    <div class = "row">
-      <div class="col-md-8" style = "top:40px;">
+     <div class="col-md-11" style = "top:40px;">
         <div class="alert alert-success alert-dismissible fade in" id = "right">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
      <strong>Correct!</strong> Great job!
@@ -62,10 +74,14 @@ include("session.php");
             <div class="alert alert-warning alert-dismissible fade in" id="wrong">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
   <strong>Not quite!</strong> We may want to revisit this. 
-      </div>
-    </div>
     
   </div>
+  </div>
+   
+    </div>
+
+    </div>
+     
 
 
       
@@ -73,9 +89,10 @@ include("session.php");
 </div> 
 
 </div>
- <div id = 'sidebar' style = "float:right; width:35%; background-color:#EBFFE6;">
+ <div id = 'sidebar' style = "float:right; width:35%; background-color:#EBFFE6; padding-top:30px;">
   <div id = sidetitle style = "color:black" id = "sidebarlist">
-    <h2>Catagory Results</h2>
+    <div class = catBox style = "background-color:white;">
+    <div style = "font-family: 'Lucida Sans Unicode', Lucida Grande, sans-serif; float:center; font-weight: bold; font-size:30px; color:#003300;">Catagory Results</div></div>
   </div>
       <div class = row>
        <div class="col-md-12" id =sidelist>
@@ -108,31 +125,33 @@ include("session.php");
   var questions = "";
  
   //extraQuestions = loadQuestions(2);
-  var questionCounter = 1;//question number
-  var initial=1;
-  var nextAdd = initial;
-  var lastAdd = initial;
-  var catagory = 1;//array number
-  questions = [];
+  var questionCounter = parseInt('<?php echo $_SESSION["questionCounter"] ?>');//question number
+  var initial=parseInt('<?php echo $_SESSION["initial"] ?>');
+  var nextAdd = parseInt('<?php echo $_SESSION["nextAdd"] ?>');
+  var lastAdd = parseInt('<?php echo $_SESSION["lastAdd"] ?>');
+  var catagory = parseInt('<?php echo $_SESSION["catagory"] ?>');//array number
+  questions = <?php echo $_SESSION["questions"] ?>;
   var listCat = $("#sidelist");
 
   var maxCatagories = parseInt(maxCat());
-  var selections = []; //Array containing user choices
+  var selections = <?php echo $_SESSION["selections"] ?>; //Array containing user choices
   var quiz = $('#quiz'); //Quiz div object
   var questionQueue = [];//Quis Ques up to displ(ay
-    var catNum = [];
-    var catScores = [];
+    var catNum = <?php echo $_SESSION["catNum"] ?>;
+    var catScores = <?php echo $_SESSION["catScores"] ?>;
     var masteryRate=1;
     var hintBox = $('#hintBox');//hint box div object
     var final = $('#final');
-    var currHintsUsed = 0;
-    var hintsUsed = [];
+    var currHintsUsed =  parseInt('<?php echo $_SESSION["currHintsUsed"] ?>');
+    var hintsUsed = <?php echo $_SESSION["hintsUsed"] ?>;
     var hintDisplayed = false;
-    var progress = 0;
+    //var progress = 0;
     var percentage = 0;
+    if (catScores.length == 0 && catNum.length == 0 && hintsUsed.length ==0){
    catScores[1] = 0;
    catNum[1] = 0;
    hintsUsed[1] = 0;
+ }
    
   
     // Display initial question
@@ -150,13 +169,34 @@ include("session.php");
   loadSidebar();
   // Click handler for the 'next' button
     function loadSidebar(){//get it to load name and score
-      for (var i = 0; i<maxCatagories;i++){
-        listCat.append("</br> <div class = catBox> Catagory "+(i+1)+"</div>");
+      for (i = 1; i<=maxCatagories; i++){
+        var bgcolor;
+        if (i == catagory){
+            bgcolor = "#376c2d"
+        }
+        else{
+          bgcolor = "#B1FFC0"
+        }
+        var quesanswered;
+        var score;
+        if (catNum[i] == undefined||catNum[i] == 0){
+          quesanswered = 0;
+          score = 0;
+        }
+        else{
+          quesanswered = catNum[i];
+          score = ((catScores[i]/catNum[i])*100);
+        }
+        var name = catInfo(i).catName;
+        listCat.append("</br> <div class = catBox style = 'background-color:"+bgcolor+";'> <h4 style = 'font-weight:bold;'>Catagory "+(i)+": "+name+"</h4> <div class = catBox style = 'background-color: white;color:#003300;'> Questions answered: "+quesanswered+"<div style = 'float:right;'> Current score: "+score+"</div></div></div>");
       }
 
     }
+
+
    $('#next').on('click', function (e){
     e.preventDefault();
+    $(this).attr("disabled", "disabled");
     
     // Suspend click listener during fade animation
     /*if(quiz.is(':animated')) {        
@@ -180,6 +220,7 @@ include("session.php");
         nextAdd--;
         hintDisplayed = false;
         hintBox.hide();
+        
         setTimeout(function(){ displayQues() }, 3000);
       
 
@@ -193,7 +234,13 @@ include("session.php");
     questionCounter--;
     displayQues();
   };
-
+   $('#finish').on('click', function (e){
+  
+    $.ajax({
+         type:"POST",
+         url: "logout.php"
+    }); 
+  });
 
 
   $('#hint').on('click', function (e){ 
@@ -255,7 +302,7 @@ if (text!= ""){
         text= JSON.parse(this.responseText);
     }
 };
-xmlhttp.open("GET", "http://localhost/quiz.php?x="+dbParam, false);
+xmlhttp.open("GET", "quiz.php?x="+dbParam, false);
 xmlhttp.send();//is it not sending?
 if (text!= ""){
   return text;
@@ -263,22 +310,47 @@ if (text!= ""){
   }
 
 
-  function catInfo(){
-    var obj = {"catagory":catagory};
+  function catInfo(cat){
+    var obj = {"catagory":cat};
 
     var dbParam = JSON.stringify(obj);
     xmlhttp = new XMLHttpRequest();
     var text = "";
     xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        text= this.responseText;
+        text= JSON.parse(this.responseText);
     }
 };
-xmlhttp.open("GET", "http://localhost/catInfo.php?x="+dbParam, false);
+xmlhttp.open("GET", "catInfo.php?x="+dbParam, false);
 xmlhttp.send();//is it not sending?
 if (text!= ""){
   return text;
 }
+  }
+
+  function setSessions(){
+     $.ajax({
+         type:"POST",
+         url: "setSessions.php",
+         data: { quesCount : questionCounter, 
+           cat: catagory,
+          ques : JSON.stringify(questions),
+          quesq: JSON.stringify(questionQueue),
+          selec: JSON.stringify(selections),
+          cats:JSON.stringify(catScores),
+          catn:JSON.stringify(catNum),
+          hintsU: JSON.stringify(hintsUsed),
+          currhintsu: currHintsUsed,
+          nAdd: nextAdd,
+          lAdd :lastAdd
+         },
+         success:function(response){
+          alert("what you got back"+JSON.parse(response));
+         },
+        error: function(xhr, status, error) {
+        alert(xhr.responseText);
+        }
+    });     
   }
 
   function saveQuestions(){
@@ -309,10 +381,10 @@ xmlhttp.send(dbParam);//is it not sending?*/
       id: 'question'
     });
     
-    var header = $('<h2>Question ' + (questionCounter) + ':</h2>');
+    var header = $('<h3>Question ' + (questionCounter) + ':</h2>');
     qElement.append(header);
     
-    var question = $('<p>').append(array/*[cat][index]*/.question);
+    var question = $('<h4 style = "padding-bottom:10px;">').append(array/*[cat][index]*/.question);
     qElement.append(question);
     
     var radioButtons = createRadios(array/*, cat, index*/);
@@ -327,9 +399,9 @@ xmlhttp.send(dbParam);//is it not sending?*/
     var item;
     var input = '';
     for (var i = 0; i < array/*[catagory][index]*/.choices.length; i++) {
-      item = $('<li>');
-      input = '<input type="radio" name="answer" value=' + (i+1) + ' />';
-      input += array/*[catagory][index]*/.choices[i];
+      item = $('<h5> ');
+      input = '<input type="radio" name="answer" value= ' + (i+1) + ' />';
+      input += '   '+array/*[catagory][index]*/.choices[i];
       item.append(input);
       radioList.append(item);
     }
@@ -341,7 +413,7 @@ xmlhttp.send(dbParam);//is it not sending?*/
     selections[questionCounter-1] = +$('input[name="answer"]:checked').val();
   }
 
-  
+  /*
   function progressMove(lastprogress, progress) {
   var elem = document.getElementById("ProgBar");   
   var width = 1;
@@ -354,7 +426,7 @@ xmlhttp.send(dbParam);//is it not sending?*/
       elem.style.width = width + '%'; 
     }
   }
-}
+}*/
 
 
   function displayHint(array/*, catagory, index*/){
@@ -383,7 +455,7 @@ xmlhttp.send(dbParam);//is it not sending?*/
         
     }
 };
-xmlhttp.open("GET", "http://localhost/getVideo.php?x="+dbParam, false);
+xmlhttp.open("GET", "getVideo.php?x="+dbParam, false);
 xmlhttp.send();//is it not sending?
 
 if (video!= ""){
@@ -398,9 +470,15 @@ if (video!= ""){
   {
   var nextQuestion;
     //for (i = catNum[catagory]; i<nextAdd; i++){
+      if (questions.length<questionCounter){
       questions.push(loadQuestions());
-      nextQuestion = createQuestionElement(questions[questionCounter-1]);
+    }
+      if(questions.length>questionQueue.length){
+        for (var i = questionQueue.length; i < questions.length; i++){
+      nextQuestion = createQuestionElement(questions[i]);
       questionQueue.push(nextQuestion);
+    }
+    }
     //}
 
   }
@@ -409,12 +487,12 @@ if (video!= ""){
     $('#right').fadeOut();
     $('#wrong').fadeOut();
     if(nextAdd>0){
-    var lastprogress = progress;
+    //var lastprogress = progress;
     //if (hasAdded === 0){
       loadQueue();
       //hasAdded = 1;
     //}
-    progress = 100/(questionQueue.length*(questionCounter+1));
+    //progress = 100/(questionQueue.length*(questionCounter+1));
     //progressMove(lastprogress, progress);
    // quiz.hide(function() {
 
@@ -435,14 +513,13 @@ if (video!= ""){
         }
         
         // Controls display of 'prev' button--should I keep it? is it even relevant?
-        if(selections.length !== null){
-          $('#prev').show();
-        } 
-        else{
+      
           
           $('#prev').hide();
+          setSessions();
+          setTimeout('$("#next").removeAttr("disabled")', 500);
           $('#next').show();
-        }
+
       }
       else{
         if (group == 0){
@@ -451,6 +528,10 @@ if (video!= ""){
       else{
         calcScoreAlt();
       }
+      listCat.empty();
+        loadSidebar();
+      setSessions();
+      setTimeout('$("#next").removeAttr("disabled")', 500);
       $('#next').show();
       }
     //});
@@ -479,7 +560,7 @@ function calcScore() {//attenuated version--tell them when more content is added
     //$('#instrucVid').hide();
     var numWrong = 0;
     var numCorrect = 0;
-    var catTotal = parseInt(catInfo());//change catInfo to return more info for the boxes
+    var catTotal = parseInt(catInfo(catagory).numQues);//change catInfo to return more info for the boxes
     var sum = selections.length-lastAdd;
     hintsUsed[catagory] += currHintsUsed;
       for (var i = sum; i < selections.length; i++) {
@@ -513,9 +594,11 @@ function calcScore() {//attenuated version--tell them when more content is added
         final.append('Overall score is: '+percentage*100+'. If you are ready to log out, please press finish.');
         questionCounter = 0;
       //percentage = ((catScores[0]-hintsUsed[catagory]*.5)+catScores[1])/selections.length;
-        
+        setSessions();
         final.show();
         saveQuestions();
+        listCat.empty();
+        loadSidebar();
         $('#hint').remove();
         $('#next').remove();
         $('#quiz').remove();
@@ -530,6 +613,7 @@ function calcScore() {//attenuated version--tell them when more content is added
       hintsUsed[catagory]=0;
       catNum[catagory] = 0;
       catScores[catagory] = 0;
+      setSessions();
       displayVid();
       displayQues();
     }
@@ -549,7 +633,7 @@ function calcScoreAlt(){
     $('#hint').hide();
     var numWrong = 0;
     var numCorrect = 0;
-    var catTotal = parseInt(catInfo());
+    var catTotal = parseInt(catInfo(catagory).numQues);
     var sum = selections.length-lastAdd;
     hintsUsed[catagory] += currHintsUsed;
       for (var i = sum; i < selections.length; i++) {
@@ -591,6 +675,8 @@ function calcScoreAlt(){
         
         final.show();
         saveQuestions();
+        listCat.empty();
+        loadSidebar();
         $('#next').hide();
         $('#hint').hide();
         $('#quiz').remove();
@@ -612,9 +698,30 @@ function calcScoreAlt(){
     else{
     if (confirm("You have finished this section. However, there are more questions available to you in this catagory. Would you like to try them? Press OK to add more questions, press cancel to continue to the next catagory.")) {
       $('#next').show();
+      $('#hint').show();
       displayQues();
         
-    } else {
+    } 
+    else if (catagory===maxCatagories){
+    $('#instrucVid').hide();//final percentage and display
+      var sum2 = 0;
+      for (var s = 1; s<=catagory; s++){
+        sum2 +=catScores[s];
+      }
+      percentage = sum2/selections.length;
+        final.append('Overall score is: '+percentage*100+'. If you are ready to log out, please press finish.');
+        questionCounter = 0;
+      //percentage = ((catScores[0]-hintsUsed[catagory]*.5)+catScores[1])/selections.length;
+        
+        final.show();
+        saveQuestions();
+        $('#next').hide();
+        $('#hint').hide();
+        $('#quiz').remove();
+       $('#finish').show();
+    }
+
+    else {
       saveQuestions();
       catagory++;
       nextAdd = initial;
@@ -622,6 +729,7 @@ function calcScoreAlt(){
       hintsUsed[catagory]=0;
       catNum[catagory] = 0;
       catScores[catagory] = 0;
+      $('#hint').show();
       displayVid();
       displayQues();
         

@@ -1,7 +1,7 @@
 <?php
  include("question.php");
  include("config.php");
- //session_start();
+ session_start();
    //include("quiz.php")
    //echo "hi i'm working"; 
    //header("Content-Type: application/json; charset=UTF-8");
