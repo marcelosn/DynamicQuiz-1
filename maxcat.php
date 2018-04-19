@@ -1,5 +1,6 @@
 <?php
 include("config.php");
+session_start();
     
     $conn = mysqli_query($db, "SELECT DISTINCT catagory FROM questions");
 
