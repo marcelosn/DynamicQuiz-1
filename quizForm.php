@@ -10,7 +10,7 @@ include("session.php");
 		<title>Dynamic Quiz</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link type='text/css' rel='stylesheet' href='prototype.css'/>
-		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open Sans"/>
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open Sans"/>
     
 	</head>
 	<body >
@@ -111,7 +111,7 @@ include("session.php");
 </div>
 
 		
-		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
+		<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
     <script type="application/json" src='questions.json'></script>
     
   
