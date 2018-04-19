@@ -344,8 +344,7 @@ if (text!= ""){
           nAdd: nextAdd,
           lAdd :lastAdd
          }
-        }
-    });     
+        });     
   }
 
   function saveQuestions(){
