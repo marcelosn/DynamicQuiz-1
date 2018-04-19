@@ -343,12 +343,7 @@ if (text!= ""){
           currhintsu: currHintsUsed,
           nAdd: nextAdd,
           lAdd :lastAdd
-         },
-         success:function(response){
-          alert("what you got back"+JSON.parse(response));
-         },
-        error: function(xhr, status, error) {
-        alert(xhr.responseText);
+         }
         }
     });     
   }
