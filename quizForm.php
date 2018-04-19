@@ -579,7 +579,7 @@ function calcScore() {//attenuated version--tell them when more content is added
       scoreRatio = 0;
     }
     else{
-      scoreRatio = (lastAdd)/(numWrong+0.5*currHintsUsed);
+      scoreRatio = (numWrong+0.5*currHintsUsed)/(lastAdd);
     }
     nextAdd = Math.round(scoreRatio*(catNum[catagory]));
     lastAdd= nextAdd;
